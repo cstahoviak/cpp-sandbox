@@ -84,22 +84,24 @@ struct PlannerResult
  *  1. PlanRoute()
  *  2. ComputeCost(const Node&, const Node&) 
  */
-template<typename PlannerResultType>
+template<typename NodeType>
 class Planner
 {
+  using PlannerResultType = PlannerResult<NodeType>;
+
   public:
     virtual PlannerResultType PlanRoute() = 0;
-    virtual double ComputeCost(const Node&, const Node&) = 0;
+    virtual double ComputeCost(const NodeType&, const NodeType&) = 0;
 
   protected:
-    std::unordered_map<std::string, std::shared_ptr<Node>> graph_;
+    std::unordered_map<std::string, std::shared_ptr<NodeType>> graph_;
 };
 
 
 /**
  * @brief The SimplePlanner will use the Node type.
  */
-class SimplePlanner : public Planner<PlannerResult<Node>>
+class SimplePlanner : public Planner<Node>
 {
   public:
     /**
@@ -123,7 +125,7 @@ class SimplePlanner : public Planner<PlannerResult<Node>>
 /**
  * @brief The DerivedPlanner will use the DerivedNode type.
  */
-class DerivedPlanner : public Planner<PlannerResult<DerivedNode>>
+class DerivedPlanner : public Planner<DerivedNode>
 {
   public:
     /**
@@ -131,13 +133,16 @@ class DerivedPlanner : public Planner<PlannerResult<DerivedNode>>
      */
     template<size_t N>
     DerivedPlanner(const std::array<Charger, N>& network) {
+      size_t idx{0};
       for ( const Charger& charger : network ) {
         graph_[charger.name] = std::make_shared<DerivedNode>(charger);
+        graph_.at(charger.name).get()->cost = idx;
+        idx++;
       }
     }
 
     PlannerResult<DerivedNode> PlanRoute() override;
-    double ComputeCost(const Node& node1, const Node& node2)  override;
+    double ComputeCost(const DerivedNode& node1, const DerivedNode& node2) override;
 };
 
 /**

@@ -31,8 +31,8 @@ std::ostream& operator<<(std::ostream& stream, const DerivedNode& node) {
   }
 
   return stream << std::setprecision(4) << "DerivedNode(charger: " << 
-    node.name() << ", duration: " << node.duration << ", parent: " <<
-    parent_name << ")";
+    node.name() << ", duration: " << node.duration << ", cost: " <<
+      node.cost << ", parent: " << parent_name << ")";
 }
 
 std::ostream& operator<<(std::ostream& stream, const std::shared_ptr<Node>& node) {
@@ -71,10 +71,11 @@ PlannerResult<DerivedNode> DerivedPlanner::PlanRoute()
   for ( const auto& [name, node] : graph_ ) {
     DerivedNode new_node(node.get()->charger());
     new_node.duration = idx;
+    new_node.cost = 0;
 
     if ( !route.empty() ) {
-      new_node.cost = ComputeCost(new_node, route.back());
-      new_node.parent(std::static_pointer_cast<DerivedNode>(node));
+      new_node.cost = ComputeCost(new_node, *node.get());
+      new_node.parent(node);
     }
 
     route.push_back(std::move(new_node));
@@ -83,7 +84,6 @@ PlannerResult<DerivedNode> DerivedPlanner::PlanRoute()
   return route;
 }
 
-double DerivedPlanner::ComputeCost(const Node& node1, const Node& node2) {
-  return static_cast<const DerivedNode&>(node1).cost + 
-    static_cast<const DerivedNode&>(node2).cost;
+double DerivedPlanner::ComputeCost(const DerivedNode& node1, const DerivedNode& node2) {
+  return node1.cost + node2.cost;
 }
