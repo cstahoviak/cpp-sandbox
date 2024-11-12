@@ -1,7 +1,7 @@
 /**
  * @file polymorphism.cpp
  * @author Carl Stahoviak
- * @brief Type definitions for polymorphism.h
+ * @brief Type definitions for templates/planner.h.
  * @version 0.1
  * @date 2024-11-08
  * 
@@ -10,9 +10,6 @@
 #include "templates/planner.h"
 #include "math.h"
 #include "node.h"
-
-#include <cmath>
-#include <memory>
 
 namespace templates
 {

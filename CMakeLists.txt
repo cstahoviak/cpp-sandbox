@@ -7,6 +7,7 @@ project(sandbox CXX)
 include_directories("include")
 
 set(LIB_SOURCES
+  "src/smart_pointers/planner.cpp"
   "src/templates/planner.cpp"
   "src/network.cpp"
   "src/node.cpp"
@@ -14,6 +15,7 @@ set(LIB_SOURCES
 
 set(LIB_HEADERS
   # "include/manager.h"
+  "include/smart_pointers/planner.h"
   "include/templates/planner.h"
   "include/math.h"
   "include/network.h"
@@ -25,6 +27,7 @@ add_library(sandboxlib ${LIB_SOURCES} ${LIB_HEADERS})
 
 # Build all app executables
 set(APP_SOURCES
+  "app/polymorphism_and_smart_pointers.cpp"
   "app/polymorphism_and_templates.cpp"
 )
 foreach( testsourcefile ${APP_SOURCES} )

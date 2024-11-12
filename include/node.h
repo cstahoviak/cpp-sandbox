@@ -16,7 +16,7 @@
 
   struct Node
   {
-    Node(const Charger charger) : charger_(std::move(charger)) {}
+    Node(Charger charger) : charger_(std::move(charger)) {}
 
     double duration{0};
 
@@ -34,7 +34,7 @@
    */
   struct DerivedNode : public Node, std::enable_shared_from_this<DerivedNode>
   {
-    DerivedNode(const Charger charger) : Node(charger) {}
+    DerivedNode(Charger charger) : Node(charger) {}
 
     double cost{std::numeric_limits<double>::max()};
 

@@ -16,29 +16,8 @@
 using namespace templates;
 
 
-int main() {
-  // Create a Node and a Derived Node
-  const std::shared_ptr<Node> node = std::make_shared<Node>(NETWORK[0]);
-  const std::shared_ptr<DerivedNode> derived = 
-    std::make_shared<DerivedNode>(NETWORK[0]);
-
-  // Experiment with different ways of up-casting a DerivedNode to a Node.
-  const std::shared_ptr<Node> derived_as_node = derived;
-  const std::shared_ptr<Node> derived_as_node2 = derived.get()->shared_from_this();
-
-  std::cout << "Outputting the DerivedNode:" << std::endl;
-  std::cout << "(as DerivedNode): " << derived << std::endl;
-  std::cout << "(as Node): " << derived_as_node << std::endl;
-  std::cout << "(as Node): " << derived_as_node2 << std::endl;
-  std::cout << "(as Node): " << static_cast<Node>(*derived.get()) << std::endl;
-  std::cout << "(as Node): " << static_cast<std::shared_ptr<Node>>(derived) << std::endl;
-  
-  // Assign the derived node as the parent of another DerivedNode
-  std::cout << "\nAssign the DerivedNode's parent:" << std::endl;
-  auto another_derived = std::make_shared<DerivedNode>(NETWORK[1]);
-  another_derived.get()->parent(derived);
-  std::cout << another_derived << std::endl;
-
+int main()
+{
   // Use the planners via direct construction.
   {
     // Plan a route with the SimplePlanner
