@@ -9,6 +9,8 @@
  * 
  * @copyright Copyright (c) 2024
  */
+#include "network.h"
+
 #include <iomanip>
 #include <iostream>
 #include <limits>
@@ -17,17 +19,9 @@
 #include <vector>
 
 
-struct Charger{
-  std::string name;
-  double x{0};
-  double y{0};
-};
-
-
 struct Node
 {
   Node(const Charger charger) : charger_(std::move(charger)) {}
-  // virtual ~Node();
 
   double duration{0};
 
@@ -39,7 +33,7 @@ struct Node
 };
 
 /**
- * @brief The Derived node adds the following attributes on top of the Node.
+ * @brief The Derived node adds the following attributes to the Node.
  * 1. cost
  * 2. parent
  */
@@ -79,10 +73,17 @@ struct PlannerResult
 };
 
 
+enum class PlannerType{
+  SIMPLE,
+  DERIVED,
+  NONE
+};
+
+
 /**
  * @brief The Planner interface class defines two member functions:
  *  1. PlanRoute()
- *  2. ComputeCost(const Node&, const Node&) 
+ *  2. ComputeCost(const NodeType&, const NodeType&) 
  */
 template<typename NodeType>
 class Planner
@@ -90,6 +91,25 @@ class Planner
   using PlannerResultType = PlannerResult<NodeType>;
 
   public:
+    Planner() {
+      for ( const Charger& charger : NETWORK ) {
+        graph_[charger.name] = std::make_shared<NodeType>(charger);
+      }
+    }
+
+    /**
+     * @brief Constructs a graph of Node objects.
+     * 
+     * Note: The implementation and declaration of a template function (
+     * including ctors) must appear in the header and not the cpp file.
+     */
+    template<size_t N>
+    Planner(const std::array<Charger, N>& network) {
+      for ( const Charger& charger : network ) {
+        graph_[charger.name] = std::make_shared<NodeType>(charger);
+      }
+    }
+
     virtual PlannerResultType PlanRoute() = 0;
     virtual double ComputeCost(const NodeType&, const NodeType&) = 0;
 
@@ -104,23 +124,12 @@ class Planner
 class SimplePlanner : public Planner<Node>
 {
   public:
-    /**
-     * @brief Constructs a graph of Node objects.
-     * 
-     * Note: The implementation and declaration of a templarte function (
-     * including ctors) must appear in the header and not the cpp file.
-     */
     template<size_t N>
-    SimplePlanner(const std::array<Charger, N>& network) {
-      for ( const Charger& charger : network ) {
-        graph_[charger.name] = std::make_shared<Node>(charger);
-      }
-    }
+    SimplePlanner(const std::array<Charger, N>& network) : Planner(network) {}
 
     PlannerResult<Node> PlanRoute() override;
     double ComputeCost(const Node&, const Node&) override;
 };
-
 
 /**
  * @brief The DerivedPlanner will use the DerivedNode type.
@@ -132,18 +141,36 @@ class DerivedPlanner : public Planner<DerivedNode>
      * @brief Constructs a graph of DerivedNode objects.
      */
     template<size_t N>
-    DerivedPlanner(const std::array<Charger, N>& network) {
-      size_t idx{0};
-      for ( const Charger& charger : network ) {
-        graph_[charger.name] = std::make_shared<DerivedNode>(charger);
-        graph_.at(charger.name).get()->cost = idx;
-        idx++;
-      }
-    }
+    DerivedPlanner(const std::array<Charger, N>& network) : Planner(network) {}
 
     PlannerResult<DerivedNode> PlanRoute() override;
     double ComputeCost(const DerivedNode& node1, const DerivedNode& node2) override;
 };
+
+/**
+ * @brief It doesn't seem like using a templated interface class (Planner) in
+ * combination with an OOP Factory style function (GetPlanner) that returns a 
+ * unique_ptr to the base class (Planner) is going to work.
+ * 
+ * @tparam NodeType 
+ * @param type 
+ * @return std::unique_ptr<Planner<NodeType>> 
+ */
+template<typename NodeType>
+inline std::unique_ptr<Planner<NodeType>> GetPlanner(PlannerType type)
+{
+  switch( type )
+  {
+    case PlannerType::SIMPLE:
+      return std::make_unique<SimplePlanner>();
+
+    case PlannerType::DERIVED:
+      return std::make_unique<DerivedPlanner>();
+
+    default:
+      throw std::invalid_argument("Cannot create Planner from the provided PlannerType.");
+  }
+}
 
 /**
  * @brief Atttempting to implement the unique_ptr downcast solution from:

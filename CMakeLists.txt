@@ -7,11 +7,14 @@ project(sandbox CXX)
 include_directories("include")
 
 set(LIB_SOURCES
-  "src/polymorphism.cpp"
+  "src/planner.cpp"
+  "src/network.cpp"
 )
 
 set(LIB_HEADERS
-  "include/polymorphism.h"
+  # "include/manager.h"
+  "include/planner.h"
+  "include/network.h"
 )
 
 # Create a library
