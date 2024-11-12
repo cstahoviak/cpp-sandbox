@@ -14,8 +14,8 @@ set(LIB_SOURCES
 )
 
 set(LIB_HEADERS
-  # "include/manager.h"
   "include/smart_pointers/planner.h"
+  # "include/templates/manager.h"
   "include/templates/planner.h"
   "include/math.h"
   "include/network.h"
