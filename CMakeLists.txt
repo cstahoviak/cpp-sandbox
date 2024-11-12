@@ -7,13 +7,14 @@ project(sandbox CXX)
 include_directories("include")
 
 set(LIB_SOURCES
-  "src/planner.cpp"
+  "src/templates/planner.cpp"
   "src/network.cpp"
 )
 
 set(LIB_HEADERS
   # "include/manager.h"
-  "include/planner.h"
+  "include/templates/planner.h"
+  "include/math.h"
   "include/network.h"
 )
 
@@ -22,7 +23,7 @@ add_library(sandboxlib ${LIB_SOURCES} ${LIB_HEADERS})
 
 # Build all app executables
 set(APP_SOURCES
-  "app/virtual_funcs_and_polymorphism.cpp"
+  "app/polymorphism_and_templates.cpp"
 )
 foreach( testsourcefile ${APP_SOURCES} )
     # Cut off the file extension and directory path

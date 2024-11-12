@@ -1,15 +1,17 @@
 /**
- * @file polymorphism.cpp
+ * @file polymorphism_and_templates.cpp
  * @author Carl Stahoviak
- * @brief Experiment with virtual functions and polymorphic types in the context
- * of the Tesla Supercharger problem.
+ * @brief Experiment with virtual functions, polymorphic types and templating
+ * in the context of the Tesla Supercharger problem.
  * @version 0.1
  * @date 2024-11-08
  * 
  * @copyright Copyright (c) 2024
  */
 // #include "manager.h"
-#include "planner.h"
+#include "templates/planner.h"
+
+using namespace templates;
 
 
 int main() {
