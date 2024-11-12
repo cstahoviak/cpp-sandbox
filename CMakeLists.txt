@@ -9,6 +9,7 @@ include_directories("include")
 set(LIB_SOURCES
   "src/templates/planner.cpp"
   "src/network.cpp"
+  "src/node.cpp"
 )
 
 set(LIB_HEADERS
@@ -16,6 +17,7 @@ set(LIB_HEADERS
   "include/templates/planner.h"
   "include/math.h"
   "include/network.h"
+  "include/node.h"
 )
 
 # Create a library

@@ -11,6 +11,8 @@
 // #include "manager.h"
 #include "templates/planner.h"
 
+#include <iostream>
+
 using namespace templates;
 
 
